@@ -36,5 +36,7 @@
         <SOURCES />
       </library>
     </orderEntry>
+    <orderEntry type="library" name="TagMe-ext-libs" level="application" />
+    <orderEntry type="library" name="FEL-0.1.0-fat" level="application" />
   </component>
 </module>
