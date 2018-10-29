@@ -57,16 +57,16 @@ object ClueWeb09WarcUtils {
     Try(scala.io.Source.fromInputStream(inputStream).mkString)
   }
 
+  //Counters for documenting progress
+  var docCount = 0
+  var docCount200 = 0
+  var failureCount = 0L
+  var gzipEntries = 0
+
   //Largely derived from org.jwat.tools.tasks.extract
   //Takes a function that acts on a (trecID, title, body) Tuple3
   //If title or body cannot be extracted, "" is returned
   def processFile(filePath: String, startTime: Long)(action: (String, String, String) => Unit) = {
-    //Counters for documenting progress
-    var docCount = 0
-    var docCount200 = 0
-    var failureCount = 0L
-    var gzipEntries = 0
-
     //Read the file and get an inputstream
     val raf = new RandomAccessFile(filePath, "r")
     val rafin = new RandomAccessFileInputStream(raf)
