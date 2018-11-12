@@ -33,6 +33,15 @@
     <orderEntry type="library" name="Maven: org.typelevel:cats-kernel_sjs0.6_2.11:1.4.0" level="project" />
     <orderEntry type="library" name="Maven: org.typelevel:machinist_sjs0.6_2.11:0.6.5" level="project" />
     <orderEntry type="library" name="Maven: org.scala-lang:scala-reflect:2.11.12" level="project" />
+    <orderEntry type="library" name="Maven: io.circe:circe-parser_2.11:0.10.0" level="project" />
+    <orderEntry type="library" name="Maven: io.circe:circe-jawn_2.11:0.10.0" level="project" />
+    <orderEntry type="library" name="Maven: org.spire-math:jawn-parser_2.11:0.13.0" level="project" />
+    <orderEntry type="library" name="Maven: io.circe:circe-core_2.11:0.10.0" level="project" />
+    <orderEntry type="library" name="Maven: io.circe:circe-numbers_2.11:0.10.0" level="project" />
+    <orderEntry type="library" name="Maven: org.typelevel:cats-core_2.11:1.4.0" level="project" />
+    <orderEntry type="library" name="Maven: org.typelevel:cats-macros_2.11:1.4.0" level="project" />
+    <orderEntry type="library" name="Maven: org.typelevel:cats-kernel_2.11:1.4.0" level="project" />
+    <orderEntry type="library" name="Maven: org.typelevel:machinist_2.11:0.6.5" level="project" />
     <orderEntry type="module-library">
       <library name="Maven: ite.acubelab.tagme:TagMe:1.0">
         <CLASSES>

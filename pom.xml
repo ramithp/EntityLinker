@@ -48,6 +48,12 @@
             <artifactId>circe-core_sjs0.6_2.11</artifactId>
             <version>0.10.0</version>
         </dependency>
+        <!-- https://mvnrepository.com/artifact/io.circe/circe-parser -->
+        <dependency>
+            <groupId>io.circe</groupId>
+            <artifactId>circe-parser_2.11</artifactId>
+            <version>0.10.0</version>
+        </dependency>
 
         <dependency>
             <groupId>ite.acubelab.tagme</groupId>
