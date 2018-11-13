@@ -35,7 +35,7 @@ object FELFormatConverter extends JsonConverter {
           //Merge
           (docID, bodyEntityList ++ titleEntityList)
       }
-      Map("docno" -> Json.fromString(docID), "tagme" -> entityIDList.asJson).asJson.noSpaces
+      Map("docno" -> Json.fromString(docID), "tagme" -> Json.fromString(entityIDList.mkString(" "))).asJson.noSpaces
     }
   }
 }
