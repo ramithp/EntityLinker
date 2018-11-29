@@ -1,25 +1,36 @@
-package com.boston.lti.entitylink
+package com.boston.lti.entitylink.warc
 
-import com.yahoo.semsearch.fastlinking.{EntityContextFastEntityLinker, FastEntityLinker}
 import com.yahoo.semsearch.fastlinking.hash.QuasiSuccinctEntityHash
 import com.yahoo.semsearch.fastlinking.w2v.{CentroidEntityContext, LREntityContext}
+import com.yahoo.semsearch.fastlinking.{EntityContextFastEntityLinker, FastEntityLinker}
 import io.circe.syntax._
 import it.unimi.dsi.fastutil.io.BinIO
+import monix.eval.Task
+import monix.execution.Scheduler.Implicits.global
 
 import scala.concurrent.Await
 import scala.concurrent.duration._
 import scala.util._
-import monix.execution.Scheduler.Implicits.global
-import monix.eval.Task
 
-//TODO avoid duplicate class
-object SemanticLRRunner extends EntityTaggerRunner {
+import com.boston.lti.entitylink.EntityTagger
+
+object SemanticLRRunner extends EntityTaggerRunner with SemanticLRTagger {
+  def modelFile = args(2)
+
+  def vectorsFile = args(3)
+
+  def entitiesFile = args(4)
+}
+
+trait SemanticLRTagger extends EntityTagger {
+  def modelFile: String
+
+  def vectorsFile: String
+
+  def entitiesFile: String
 
   private object SemanticFEL {
-    val modelFile = args(2)
-    val vectorsFile = args(3)
-    val entitiesFile = args(4)
-    val fel = {
+    lazy val fel = {
       val hash = BinIO.loadObject(modelFile).asInstanceOf[QuasiSuccinctEntityHash]
       val queryContext = new LREntityContext(vectorsFile, entitiesFile, hash)
       new EntityContextFastEntityLinker(hash, queryContext)
@@ -33,7 +44,7 @@ object SemanticLRRunner extends EntityTaggerRunner {
       .flatMap { str =>
         val task: Task[java.util.List[FastEntityLinker.EntityResult]] = Task {
           SemanticFEL.fel.getResults(str, -20)
-        }.timeout(10.seconds)
+        }.timeout(30.seconds)
 
         val fut = task.runAsync
         Try(Await.result[java.util.List[FastEntityLinker.EntityResult]](fut, 10.seconds)) match {
@@ -53,13 +64,23 @@ object SemanticLRRunner extends EntityTaggerRunner {
 }
 
 
-object SemanticCentroidRunner extends EntityTaggerRunner {
+object SemanticCentroidRunner extends EntityTaggerRunner with SemanticCentroidTagger {
+  def modelFile = args(2)
+
+  def vectorsFile = args(3)
+
+  def entitiesFile = args(4)
+}
+
+trait SemanticCentroidTagger extends EntityTagger {
+  def modelFile: String
+
+  def vectorsFile: String
+
+  def entitiesFile: String
 
   private object SemanticFEL {
-    val modelFile = args(2)
-    val vectorsFile = args(3)
-    val entitiesFile = args(4)
-    val fel = {
+    lazy val fel = {
       val hash = BinIO.loadObject(modelFile).asInstanceOf[QuasiSuccinctEntityHash]
       val queryContext = new CentroidEntityContext(vectorsFile, entitiesFile, hash)
       new EntityContextFastEntityLinker(hash, queryContext)

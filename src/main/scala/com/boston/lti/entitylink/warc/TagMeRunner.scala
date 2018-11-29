@@ -1,13 +1,17 @@
-package com.boston.lti.entitylink
+package com.boston.lti.entitylink.warc
 
-import it.acubelab.tagme.config.TagmeConfig
 import it.acubelab.tagme._
+import it.acubelab.tagme.config.TagmeConfig
 import it.acubelab.tagme.preprocessing.TopicSearcher
 
 import scala.collection.mutable.ListBuffer
 import io.circe.syntax._
 
-object TagMeRunner extends EntityTaggerRunner {
+import com.boston.lti.entitylink.EntityTagger
+
+object TagMeRunner extends EntityTaggerRunner with TagMeTagger
+
+trait TagMeTagger extends EntityTagger {
 
   object TagMe {
     val lang = "en"
@@ -42,6 +46,13 @@ object TagMeRunner extends EntityTaggerRunner {
         annotationsBuffer.add(String.valueOf(a.getTopic))
       }
     }
-    (entityCounter, annotationsBuffer.asJson)
+
+    val annotations = annotationsBuffer.map { id =>
+      Map("id" -> id.toString,
+        "text" -> "",
+        "score" -> "",
+        "type" -> "")
+    }
+    (entityCounter, annotations.asJson)
   }
 }

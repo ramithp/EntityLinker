@@ -1,31 +1,32 @@
-package com.boston.lti.entitylink
-
+package com.boston.lti.entitylink.warc
 
 import com.yahoo.semsearch.fastlinking.FastEntityLinker
 import com.yahoo.semsearch.fastlinking.hash.QuasiSuccinctEntityHash
 import com.yahoo.semsearch.fastlinking.view.EmptyContext
-import io.circe.syntax._
 import it.unimi.dsi.fastutil.io.BinIO
 
-import scala.concurrent.Await
 import scala.concurrent.duration._
-import scala.util._
+import scala.concurrent.Await
+import scala.util.{Failure, Success, Try}
+import io.circe.syntax._
 
 // In order to evaluate tasks, we'll need a Scheduler
 import monix.execution.Scheduler.Implicits.global
 
-// A Future type that is also Cancelable
-import monix.execution.CancelableFuture
-
 // Task is in monix.eval
 import monix.eval.Task
 
-object FELRunner extends EntityTaggerRunner {
+import com.boston.lti.entitylink.EntityTagger
+
+object FELRunner extends EntityTaggerRunner with FELTagger {
+  def modelFile = args(2)
+}
+
+trait FELTagger extends EntityTagger {
+  def modelFile: String
 
   object FEL {
-    val modelFile = args(2)
-
-    val fel = {
+    lazy val fel = {
       val hash = BinIO.loadObject(modelFile).asInstanceOf[QuasiSuccinctEntityHash]
       new FastEntityLinker(hash, new EmptyContext())
     }

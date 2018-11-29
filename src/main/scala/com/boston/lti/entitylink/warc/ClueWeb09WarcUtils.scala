@@ -1,18 +1,16 @@
-package com.boston.lti.entitylink
+package com.boston.lti.entitylink.warc
 
 import java.io._
 import java.nio.charset.CodingErrorAction
-import java.nio.file.{Files, Path, Paths}
 
-import com.boston.lti.entitylink.TagMeRunner._
 import org.jsoup.Jsoup
-import org.jwat.common._
-import org.jwat.gzip.{GzipEntry, GzipReader}
-import org.jwat.warc.{WarcReader, WarcReaderFactory, WarcReaderUncompressed, WarcRecord}
+import org.jwat.common.{ByteCountingPushBackInputStream, ContentType, RandomAccessFileInputStream, UriProfile}
+import org.jwat.gzip.GzipReader
+import org.jwat.warc.{WarcReaderFactory, WarcReaderUncompressed}
 
 import scala.io.Codec
 import scala.util.{Failure, Success, Try}
-
+import io.circe.syntax._
 
 object ClueWeb09WarcUtils {
 

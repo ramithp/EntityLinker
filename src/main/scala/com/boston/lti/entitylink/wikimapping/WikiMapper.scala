@@ -1,12 +1,18 @@
-package com.boston.lti.entitylink.json
+package com.boston.lti.entitylink.wikimapping
 
 import java.nio.file.{Files, Paths}
 
-import com.boston.lti.entitylink.warc.ClueWeb09WarcUtils._
+import com.boston.lti.entitylink.warc.ClueWeb09WarcUtils.listFiles
 
 import scala.io.{BufferedSource, Source}
 
-abstract class JsonConverter extends App {
+
+case class FreebaseMapping(wikiId: String, freeBaseID: String, text: String)
+
+case class WikiEntry(wikiId: String, text: String)
+
+
+abstract class WikiMapper extends App {
 
   if (args.length < 2) throw new IllegalArgumentException("Usage: [dataDirectory] [outputDirectory]")
 
@@ -24,7 +30,27 @@ abstract class JsonConverter extends App {
     path
   }
 
+  val freeBaseWikiMappingFile = args(2)
+  val bufferedWikiMappingReader: BufferedSource = Source.fromFile(freeBaseWikiMappingFile, "UTF-8")
+
+  val wikiMappings: Map[String, List[FreebaseMapping]] = bufferedWikiMappingReader.getLines()
+    .toList
+    .map(_.split("\\s+", 3))
+    .map { case Array(x, y, z) => FreebaseMapping(x, y, processTitle(z)) }
+    .groupBy(_.text)
+
+  println(s"Initialized wikipedia-freebase mapping of size:${wikiMappings.size}")
+
+
   var iter = 0
+
+  def processTitle(unprocessedTitleStr: String) = unprocessedTitleStr
+    .replace("_", " ")
+    .replace("(", "")
+    .replace(")", "")
+    .replace(",", "")
+    .replace(" ", "")
+    .toLowerCase.trim
 
   def bufferedReaderToJsonList(bufferedSource: BufferedSource): Seq[String]
 
@@ -51,6 +77,7 @@ abstract class JsonConverter extends App {
 
 
   println(s"A total of $iter entities jsons have been converted and written to file")
-  println("Completed everything. Shutting down")
+  println(s"Completed everything. Shutting down. Took ${(System.currentTimeMillis() - startTime) / 1000} seconds")
 
 }
+
